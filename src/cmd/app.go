@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"flag"
+	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/jmoiron/sqlx"
@@ -10,9 +11,12 @@ import (
 
 	domain "github.com/linggaaskaedo/go-blog/src/business/domain"
 	usecase "github.com/linggaaskaedo/go-blog/src/business/usecase"
+	resthandler "github.com/linggaaskaedo/go-blog/src/handler/rest"
+	libgrace "github.com/linggaaskaedo/go-blog/stdlib/grace"
 	liblog "github.com/linggaaskaedo/go-blog/stdlib/logger"
+	libmux "github.com/linggaaskaedo/go-blog/stdlib/mux"
 	libredis "github.com/linggaaskaedo/go-blog/stdlib/redis"
-	librouter "github.com/linggaaskaedo/go-blog/stdlib/router"
+	libhttpserver "github.com/linggaaskaedo/go-blog/stdlib/server"
 	libsql "github.com/linggaaskaedo/go-blog/stdlib/sql"
 )
 
@@ -21,13 +25,15 @@ var (
 	minJitter int
 	maxJitter int
 
+	dom *domain.Domain
+	uc  *usecase.Usecase
+
 	redisClient0 *redis.Client
 	sqlClient0   *sqlx.DB
 	sqlClient1   *sqlx.DB
-	httpRouter   *mux.Router
-
-	dom *domain.Domain
-	uc  *usecase.Usecase
+	httpMux      *mux.Router
+	httpServer   *http.Server
+	app          libgrace.App
 )
 
 func init() {
@@ -57,13 +63,22 @@ func init() {
 	sqlClient1 = libsql.Init(logger, conf.SQL["sql-1"])
 
 	// Router Initialization
-	httpRouter = librouter.Init(logger, conf.Router)
+	httpMux = libmux.Init(logger, conf.Mux)
 
 	// Domain Initialization
 	dom = domain.Init(logger, redisClient0, sqlClient0, sqlClient1)
 
 	// Usecase Initialization
 	uc = usecase.Init(logger, redisClient0, sqlClient0, sqlClient1, dom)
+
+	// REST Handler Initialization
+	_ = resthandler.Init(logger, httpMux, uc)
+
+	// HTTP Server Initialization
+	httpServer = libhttpserver.Init(logger, conf.Server, httpMux)
+
+	// App Initialization
+	app = libgrace.Init(logger, httpServer)
 }
 
 func main() {
@@ -79,5 +94,9 @@ func main() {
 		if sqlClient1 != nil {
 			sqlClient1.Close()
 		}
+
+		// app.Stop()
 	}()
+
+	app.Serve()
 }

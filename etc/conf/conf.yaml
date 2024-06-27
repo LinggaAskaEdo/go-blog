@@ -57,6 +57,5 @@ sql:
       connMaxLifetime: 60
       connMaxIdleTime: 10
 
-httpmux:
-  cors: 
-    enabled: true     
+server:
+  port: 6666

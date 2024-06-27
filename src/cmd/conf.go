@@ -4,8 +4,9 @@ import (
 	"github.com/spf13/viper"
 
 	liblog "github.com/linggaaskaedo/go-blog/stdlib/logger"
+	libmux "github.com/linggaaskaedo/go-blog/stdlib/mux"
 	libredis "github.com/linggaaskaedo/go-blog/stdlib/redis"
-	librouter "github.com/linggaaskaedo/go-blog/stdlib/router"
+	libhttpserver "github.com/linggaaskaedo/go-blog/stdlib/server"
 	libsql "github.com/linggaaskaedo/go-blog/stdlib/sql"
 )
 
@@ -14,7 +15,8 @@ type Config struct {
 	Log    liblog.Options
 	Redis  libredis.Options
 	SQL    map[string]libsql.Options
-	Router librouter.Options
+	Mux    libmux.Options
+	Server libhttpserver.Options
 }
 
 type Options struct {
