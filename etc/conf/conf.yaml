@@ -1,0 +1,62 @@
+log: 
+  enabled: true
+  path: /var/log/go/app.log
+  maxSize: 1 # megabytes
+  maxBackup: 10
+  maxAge: 30 # days
+  compress: true # disabled by default
+
+redis:
+  enabled: true
+  password: ""
+  address: 
+    - "localhost:6379"
+  maxRetries: "2"
+  minRetryBackoff: "1s"
+  maxRetryBackoff: '2s'
+  dialTimeout: "5s"
+  readTimeout: "2s"
+  writeTimeout: "2s"
+  poolSize: "50"
+  minIdleConns: "1"
+  maxIdleConns: "1"
+  maxActiveConns: "3"
+  poolTimeout: "60s"
+  maxRedirects: "3"
+  readOnly: true
+  routeByLatency: true
+  routeRandomly: true  
+
+sql:
+  sql-0:
+    enabled: true
+    driver: "mysql"
+    host: "localhost"
+    port: "3306"
+    db: "play-db"
+    user: "root"
+    password: "a5k4CooL"
+    ssl: false
+    connOptions:
+      maxIdleConns: 5
+      maxOpenConns: 20
+      connMaxLifetime: 60
+      connMaxIdleTime: 10
+  sql-1:
+    enabled: true
+    driver: "postgres"
+    host: "localhost"
+    port: "5432"
+    db: "postgres"
+    user: "root"
+    password: "a5k4CooL"
+    ssl: false
+    connOptions:
+      maxIdleConns: 5
+      maxOpenConns: 20
+      connMaxLifetime: 60
+      connMaxIdleTime: 10
+
+httpmux:
+  cors: 
+    enabled: true     
