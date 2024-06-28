@@ -4,10 +4,14 @@ build:
 		go generate ./src/cmd && \
 		go build -o ./build/app ./src/cmd
 
-.PHONY: run
-run: 
+.PHONY: live-run build
+live-run: 
 	@air --build.cmd "go build -o ./build/app ./src/cmd" --build.bin "./build/app"
-	
+
+.PHONY: native-run build
+native-run: 
+	@./build/app
+
 .PHONY: db-start
 db-start: 
 	@docker start mysql-docker postgres-docker redis-docker
