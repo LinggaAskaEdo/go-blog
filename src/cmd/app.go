@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"net/http"
 
@@ -62,7 +61,7 @@ func init() {
 	sqlClient0 = libsql.Init(logger, conf.SQL["sql-0"])
 	sqlClient1 = libsql.Init(logger, conf.SQL["sql-1"])
 
-	// Router Initialization
+	// HTTP Mux Initialization
 	httpMux = libmux.Init(logger, conf.Mux)
 
 	// Domain Initialization
@@ -84,7 +83,7 @@ func init() {
 func main() {
 	defer func() {
 		if redisClient0 != nil {
-			redisClient0.Conn().Quit(context.Background())
+			redisClient0.Close()
 		}
 
 		if sqlClient0 != nil {
@@ -94,8 +93,6 @@ func main() {
 		if sqlClient1 != nil {
 			sqlClient1.Close()
 		}
-
-		// app.Stop()
 	}()
 
 	app.Serve()

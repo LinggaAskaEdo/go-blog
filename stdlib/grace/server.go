@@ -20,13 +20,15 @@ func startHTTPServer(ctx context.Context, wg *sync.WaitGroup, logger zerolog.Log
 		if err != nil && err != http.ErrServerClosed {
 			logger.Debug().AnErr("HTTP server error", err)
 		}
+
+		logger.Debug().Msg("HTTP server started...")
 	}()
 
+	// Wait for the context to be canceled
 	select {
 	case <-ctx.Done():
 		// Shutdown the server gracefully
 		logger.Debug().Msg("Shutting down HTTP server gracefully...")
-
 		shutdownCtx, cancelShutdown := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancelShutdown()
 
@@ -34,9 +36,7 @@ func startHTTPServer(ctx context.Context, wg *sync.WaitGroup, logger zerolog.Log
 		if err != nil {
 			logger.Debug().AnErr("HTTP server shutdown error", err)
 		}
-	default:
-		// TODO
-	}
 
-	logger.Debug().Msg("HTTP server stopped")
+		logger.Debug().Msg("HTTP server stopped.")
+	}
 }

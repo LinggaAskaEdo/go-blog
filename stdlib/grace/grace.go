@@ -15,7 +15,6 @@ var wg sync.WaitGroup
 
 type App interface {
 	Serve()
-	Stop()
 }
 
 type app struct {
@@ -38,12 +37,12 @@ func Init(logger zerolog.Logger, httpServer *http.Server) App {
 func (g *app) Serve() {
 	ctx, cancel := context.WithCancel(context.Background())
 
-	wg.Add(1)
-	go startHTTPServer(ctx, &wg, g.logger, g.httpServer)
-
 	// Listen for termination signals
 	signalCh := make(chan os.Signal, 1)
-	signal.Notify(signalCh, syscall.SIGINT, syscall.SIGTERM)
+	signal.Notify(signalCh, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
+
+	wg.Add(1)
+	go startHTTPServer(ctx, &wg, g.logger, g.httpServer)
 
 	// Wait for termination signal
 	<-signalCh
@@ -58,8 +57,4 @@ func (g *app) Serve() {
 	wg.Wait()
 
 	g.logger.Debug().Msg("Shutdown complete.")
-}
-
-func (g *app) Stop() {
-	// TODO
 }
