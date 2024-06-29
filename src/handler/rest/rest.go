@@ -49,12 +49,13 @@ func (e *rest) Serve() {
 
 		for _, r := range route.SubRoutes {
 			var handler http.Handler
-			handler = r.HandlerFunc
 
 			//check to see if route should be protected with jwt
 			if r.Protected {
 				// TO DO
 				// handler = middleware.JWTMiddleware(r.HandlerFunc)
+			} else {
+				handler = r.HandlerFunc
 			}
 
 			routePrefix.

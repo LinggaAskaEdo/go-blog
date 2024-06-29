@@ -4,12 +4,12 @@ build:
 		go generate ./src/cmd && \
 		go build -o ./build/app ./src/cmd
 
-.PHONY: live-run build
-live-run: 
+.PHONY: live-run
+live-run: build
 	@air --build.cmd "go build -o ./build/app ./src/cmd" --build.bin "./build/app"
 
-.PHONY: native-run build
-native-run: 
+.PHONY: native-run
+native-run: build
 	@./build/app
 
 .PHONY: db-start

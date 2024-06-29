@@ -7,11 +7,12 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
 
+	"github.com/linggaaskaedo/go-blog/src/business/dto"
 	"github.com/linggaaskaedo/go-blog/src/business/entity"
 )
 
 type DomainItf interface {
-	GetUserByUserID(ctx context.Context, c entity.CacheControl, userID string) (entity.User, error)
+	GetUserByUserID(ctx context.Context, c dto.CacheControl, userID int64) (entity.User, error)
 }
 
 type user struct {

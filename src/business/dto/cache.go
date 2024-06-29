@@ -1,4 +1,4 @@
-package entity
+package dto
 
 type CacheControl struct {
 	MustRevalidate bool

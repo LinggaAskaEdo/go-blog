@@ -8,11 +8,12 @@ import (
 	"github.com/rs/zerolog"
 
 	usr "github.com/linggaaskaedo/go-blog/src/business/domain/user"
+	"github.com/linggaaskaedo/go-blog/src/business/dto"
 	"github.com/linggaaskaedo/go-blog/src/business/entity"
 )
 
 type UsecaseItf interface {
-	GetUserByUserID(ctx context.Context, c entity.CacheControl, userID string) (entity.User, error)
+	GetUserByUserID(ctx context.Context, c dto.CacheControl, userID int64) (entity.User, error)
 }
 
 type user struct {

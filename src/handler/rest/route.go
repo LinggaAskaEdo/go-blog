@@ -16,7 +16,20 @@ type Route struct {
 }
 
 func (e *rest) InitRoute() []RoutePrefix {
-	var result []RoutePrefix
+	var routes []RoutePrefix
+
+	accountRoutes := RoutePrefix{
+		"/login",
+		[]Route{
+			{
+				"AccountLogin",
+				"POST",
+				"",
+				e.AccountLogin,
+				false,
+			},
+		},
+	}
 
 	userRoutes := RoutePrefix{
 		"/user",
@@ -24,14 +37,27 @@ func (e *rest) InitRoute() []RoutePrefix {
 			{
 				"GetUserByID",
 				"GET",
-				"/{userId}",
+				"/{userID}",
 				e.GetUserByID,
 				false,
 			},
 		},
 	}
 
-	result = append(result, userRoutes)
+	productRoutes := RoutePrefix{
+		"/product",
+		[]Route{
+			{
+				"GetProductByID",
+				"GET",
+				"/{productID}",
+				e.GetProductByID,
+				false,
+			},
+		},
+	}
 
-	return result
+	routes = append(routes, accountRoutes, userRoutes, productRoutes)
+
+	return routes
 }
