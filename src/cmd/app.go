@@ -52,32 +52,32 @@ func init() {
 	}
 
 	// Logger Initialization
-	logger := liblog.Init(conf.Log)
+	liblog.Init(conf.Log)
 
 	// Redis Initialization
-	redisClient0 = libredis.Init(logger, conf.Redis)
+	redisClient0 = libredis.Init(conf.Redis)
 
 	// SQL Initialization
-	sqlClient0 = libsql.Init(logger, conf.SQL["sql-0"])
-	sqlClient1 = libsql.Init(logger, conf.SQL["sql-1"])
+	sqlClient0 = libsql.Init(conf.SQL["sql-0"])
+	sqlClient1 = libsql.Init(conf.SQL["sql-1"])
 
 	// HTTP Mux Initialization
-	httpMux = libmux.Init(logger, conf.Mux)
+	httpMux = libmux.Init(conf.Mux)
 
 	// Domain Initialization
-	dom = domain.Init(logger, redisClient0, sqlClient0, sqlClient1)
+	dom = domain.Init(redisClient0, sqlClient0, sqlClient1)
 
 	// Usecase Initialization
-	uc = usecase.Init(logger, redisClient0, sqlClient0, sqlClient1, dom)
+	uc = usecase.Init(redisClient0, sqlClient0, sqlClient1, dom)
 
 	// REST Handler Initialization
-	_ = resthandler.Init(logger, httpMux, uc)
+	resthandler.Init(httpMux, uc)
 
 	// HTTP Server Initialization
-	httpServer = libhttpserver.Init(logger, conf.Server, httpMux)
+	httpServer = libhttpserver.Init(conf.Server, httpMux)
 
 	// App Initialization
-	app = libgrace.Init(logger, httpServer)
+	app = libgrace.Init(httpServer)
 }
 
 func main() {

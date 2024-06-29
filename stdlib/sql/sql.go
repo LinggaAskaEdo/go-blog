@@ -8,7 +8,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 const (
@@ -35,19 +35,19 @@ type ConnOptions struct {
 	ConnMaxIdleTime int
 }
 
-func Init(logger zerolog.Logger, opt Options) *sqlx.DB {
+func Init(opt Options) *sqlx.DB {
 	driverStatus := fmt.Sprintf("%s_status", opt.Driver)
 	driver, host, err := getURI(opt)
 	if err != nil {
-		logger.Panic().Err(err).Str(driverStatus, "FAILED").Send()
+		log.Panic().Err(err).Str(driverStatus, "FAILED").Send()
 	}
 
 	db, err := sqlx.Connect(driver, host)
 	if err != nil {
-		logger.Panic().Err(err).Str(driverStatus, "FAILED").Send()
+		log.Panic().Err(err).Str(driverStatus, "FAILED").Send()
 	}
 
-	logger.Debug().Str(driverStatus, "OK").Send()
+	log.Debug().Str(driverStatus, "OK").Send()
 
 	return db
 }

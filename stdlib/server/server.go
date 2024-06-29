@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/rs/zerolog"
 )
 
 type httpServer struct {
@@ -23,7 +22,7 @@ type Options struct {
 	IdleTimeout  int
 }
 
-func Init(logger zerolog.Logger, opt Options, mux *mux.Router) *http.Server {
+func Init(opt Options, mux *mux.Router) *http.Server {
 	serverPort := fmt.Sprintf(":%d", opt.Port)
 
 	server := &http.Server{

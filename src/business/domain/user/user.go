@@ -24,11 +24,10 @@ type user struct {
 
 type Options struct{}
 
-func InitUserDomain(logger zerolog.Logger, redis *redis.Client, sql0 *sqlx.DB, sql1 *sqlx.DB) DomainItf {
+func InitUserDomain(redis *redis.Client, sql0 *sqlx.DB, sql1 *sqlx.DB) DomainItf {
 	return &user{
-		logger: logger,
-		redis:  redis,
-		sql0:   sql0,
-		sql1:   sql1,
+		redis: redis,
+		sql0:  sql0,
+		sql1:  sql1,
 	}
 }

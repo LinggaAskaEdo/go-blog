@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/rs/zerolog/log"
+
 	"github.com/linggaaskaedo/go-blog/src/business/dto"
 	"github.com/linggaaskaedo/go-blog/src/business/entity"
 	preference "github.com/linggaaskaedo/go-blog/stdlib/preference"
@@ -52,7 +54,7 @@ func (e *rest) httpRespSuccess(w http.ResponseWriter, r *http.Request, statusCod
 }
 
 func (e *rest) httpRespError(w http.ResponseWriter, r *http.Request, statusCode int, err error) {
-	e.logger.Error().Stack().Err(err).Send()
+	log.Error().Stack().Err(err).Send()
 
 	jsonErrResp := &HTTPErrResp{
 		Meta: dto.Meta{
@@ -68,7 +70,7 @@ func (e *rest) httpRespError(w http.ResponseWriter, r *http.Request, statusCode 
 	raw, err := json.Marshal(jsonErrResp)
 	if err != nil {
 		statusCode = http.StatusInternalServerError
-		e.logger.Error().Stack().Err(err).Send()
+		log.Error().Stack().Err(err).Send()
 	}
 
 	w.Header().Set(preference.ContentType, preference.ContentJSON)

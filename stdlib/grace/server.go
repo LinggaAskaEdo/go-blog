@@ -6,37 +6,37 @@ import (
 	"sync"
 	"time"
 
-	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
-func startHTTPServer(ctx context.Context, wg *sync.WaitGroup, logger zerolog.Logger, httpServer *http.Server) {
+func startHTTPServer(ctx context.Context, wg *sync.WaitGroup, httpServer *http.Server) {
 	defer wg.Done()
 
 	// Start the HTTP server in a separate goroutine
 	go func() {
-		logger.Debug().Msg("Starting HTTP server...")
+		log.Debug().Msg("Starting HTTP server...")
 
 		err := httpServer.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
-			logger.Debug().AnErr("HTTP server error", err)
+			log.Debug().AnErr("HTTP server error", err)
 		}
 
-		logger.Debug().Msg("HTTP server started...")
+		log.Debug().Msg("HTTP server started...")
 	}()
 
 	// Wait for the context to be canceled
 	select {
 	case <-ctx.Done():
 		// Shutdown the server gracefully
-		logger.Debug().Msg("Shutting down HTTP server gracefully...")
+		log.Debug().Msg("Shutting down HTTP server gracefully...")
 		shutdownCtx, cancelShutdown := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancelShutdown()
 
 		err := httpServer.Shutdown(shutdownCtx)
 		if err != nil {
-			logger.Debug().AnErr("HTTP server shutdown error", err)
+			log.Debug().AnErr("HTTP server shutdown error", err)
 		}
 
-		logger.Debug().Msg("HTTP server stopped.")
+		log.Debug().Msg("HTTP server stopped.")
 	}
 }

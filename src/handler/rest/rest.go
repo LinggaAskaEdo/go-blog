@@ -5,7 +5,6 @@ import (
 	"sync"
 
 	"github.com/gorilla/mux"
-	"github.com/rs/zerolog"
 
 	"github.com/linggaaskaedo/go-blog/src/business/usecase"
 )
@@ -15,30 +14,24 @@ var (
 	AppRoutes []RoutePrefix
 )
 
-type REST interface{}
-
 type rest struct {
-	logger zerolog.Logger
-	mux    *mux.Router
-	uc     *usecase.Usecase
+	mux *mux.Router
+	uc  *usecase.Usecase
 }
 
 type Options struct{}
 
-func Init(logger zerolog.Logger, mux *mux.Router, uc *usecase.Usecase) REST {
+func Init(mux *mux.Router, uc *usecase.Usecase) {
 	var e *rest
 
 	once.Do(func() {
 		e = &rest{
-			logger: logger,
-			mux:    mux,
-			uc:     uc,
+			mux: mux,
+			uc:  uc,
 		}
 
 		e.Serve()
 	})
-
-	return e
 }
 
 func (e *rest) Serve() {

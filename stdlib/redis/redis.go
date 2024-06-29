@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/redis/go-redis/v9"
-	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 type Options struct {
@@ -29,7 +29,7 @@ type Options struct {
 	RouteRandomly   bool
 }
 
-func Init(logger zerolog.Logger, opt Options) *redis.Client {
+func Init(opt Options) *redis.Client {
 	if !opt.Enabled {
 		return nil
 	}
@@ -59,10 +59,10 @@ func Init(logger zerolog.Logger, opt Options) *redis.Client {
 
 	ping, err := redisClient.Ping(context.Background()).Result()
 	if err != nil {
-		logger.Panic().Err(err).Str("redis_status", "FAILED").Send()
+		log.Panic().Err(err).Str("redis_status", "FAILED").Send()
 	}
 
-	logger.Debug().Str("redis_status", ping).Send()
+	log.Debug().Str("redis_status", ping).Send()
 
 	return redisClient
 }
