@@ -5,6 +5,7 @@ import (
 	"sync"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/zerolog"
 
 	"github.com/linggaaskaedo/go-blog/src/business/usecase"
 )
@@ -15,17 +16,19 @@ var (
 )
 
 type rest struct {
+	log zerolog.Logger
 	mux *mux.Router
 	uc  *usecase.Usecase
 }
 
 type Options struct{}
 
-func Init(mux *mux.Router, uc *usecase.Usecase) {
+func Init(log zerolog.Logger, mux *mux.Router, uc *usecase.Usecase) {
 	var e *rest
 
 	once.Do(func() {
 		e = &rest{
+			log: log,
 			mux: mux,
 			uc:  uc,
 		}

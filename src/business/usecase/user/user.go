@@ -5,6 +5,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 	"github.com/redis/go-redis/v9"
+	"github.com/rs/zerolog"
 
 	usr "github.com/linggaaskaedo/go-blog/src/business/domain/user"
 	"github.com/linggaaskaedo/go-blog/src/business/dto"
@@ -16,6 +17,7 @@ type UsecaseItf interface {
 }
 
 type user struct {
+	log   zerolog.Logger
 	redis *redis.Client
 	sql0  *sqlx.DB
 	sql1  *sqlx.DB
@@ -24,8 +26,9 @@ type user struct {
 
 type Options struct{}
 
-func InitUserUsecase(redis *redis.Client, sql0 *sqlx.DB, sql1 *sqlx.DB, u usr.DomainItf) UsecaseItf {
+func InitUserUsecase(log zerolog.Logger, redis *redis.Client, sql0 *sqlx.DB, sql1 *sqlx.DB, u usr.DomainItf) UsecaseItf {
 	return &user{
+		log:   log,
 		redis: redis,
 		sql0:  sql0,
 		sql1:  sql1,

@@ -1,3 +1,5 @@
+SQL_PATH = './etc/sql/'
+
 .PHONY: build
 build: 
 	@go mod tidy && \
@@ -27,3 +29,11 @@ rabbit-start:
 .PHONY: rabbit-stop
 rabbit-stop: 
 	@docker stop rabbitmq-docker
+
+.PHONY: generate-migrate-file
+generate-migrate-file: 
+	@if [ -z "$(name)" ]; then \
+		echo "Param name is missing !!!\nex: make generate-migrate-file name=create_user_table"; \
+	else \
+		migrate create -ext sql -dir ${SQL_PATH} -seq $(name); \
+	fi

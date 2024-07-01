@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/linggaaskaedo/go-blog/src/business/entity"
+	x "github.com/linggaaskaedo/go-blog/stdlib/error"
 )
 
 func (u *user) getSQLUserByID(ctx context.Context, userID int64) (entity.User, error) {
@@ -11,7 +12,7 @@ func (u *user) getSQLUserByID(ctx context.Context, userID int64) (entity.User, e
 
 	sqlRow := u.sql0.QueryRowContext(ctx, GetUserByID, userID)
 	if sqlRow.Err() != nil {
-		return result, sqlRow.Err()
+		return result, x.Wrap("getSQLUserByID", sqlRow.Err())
 	}
 
 	err := sqlRow.Scan(
@@ -23,7 +24,7 @@ func (u *user) getSQLUserByID(ctx context.Context, userID int64) (entity.User, e
 		&result.Division.Name,
 	)
 	if err != nil {
-		return result, err
+		return result, x.Wrap("getSQLUserByID", err)
 	}
 
 	return result, nil

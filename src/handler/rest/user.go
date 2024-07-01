@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/rs/zerolog/log"
 
 	"github.com/linggaaskaedo/go-blog/src/business/dto"
 	preference "github.com/linggaaskaedo/go-blog/stdlib/preference"
@@ -14,7 +13,7 @@ import (
 func (e *rest) GetUserByID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	userID := params["userID"]
-	log.Debug().Str("user_param", userID).Send()
+	e.log.Debug().Str("user_param", userID).Send()
 
 	vid, err := strconv.ParseInt(userID, 10, 64)
 	if err != nil {

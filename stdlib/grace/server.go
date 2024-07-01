@@ -6,10 +6,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 )
 
-func startHTTPServer(ctx context.Context, wg *sync.WaitGroup, httpServer *http.Server) {
+func startHTTPServer(ctx context.Context, wg *sync.WaitGroup, log zerolog.Logger, httpServer *http.Server) {
 	defer wg.Done()
 
 	// Start the HTTP server in a separate goroutine

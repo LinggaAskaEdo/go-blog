@@ -43,7 +43,7 @@ sql:
       connMaxLifetime: 60
       connMaxIdleTime: 10
   sql-1:
-    enabled: true
+    enabled: false
     driver: "postgres"
     host: "localhost"
     port: "5432"
@@ -57,8 +57,14 @@ sql:
       connMaxLifetime: 60
       connMaxIdleTime: 10
 
+migrate:
+  path: "./etc/sql/"
+  mysqlEnabled: true
+  postgresEnabled: false
+
 server:
   port: 6666
   writeTimeout: 15
   readTimeout: 15
   idleTimeout: 60
+

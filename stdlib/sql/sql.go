@@ -1,19 +1,16 @@
 package sql
 
 import (
-	"errors"
 	"fmt"
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
-	"github.com/rs/zerolog/log"
-)
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
-const (
-	PGSQL string = `postgres`
-	MYSQL string = `mysql`
+	preference "github.com/linggaaskaedo/go-blog/stdlib/preference"
 )
 
 type Options struct {
@@ -35,7 +32,11 @@ type ConnOptions struct {
 	ConnMaxIdleTime int
 }
 
-func Init(opt Options) *sqlx.DB {
+func Init(log zerolog.Logger, opt Options) *sqlx.DB {
+	if !opt.Enabled {
+		return nil
+	}
+
 	driverStatus := fmt.Sprintf("%s_status", opt.Driver)
 	driver, host, err := getURI(opt)
 	if err != nil {
@@ -54,7 +55,7 @@ func Init(opt Options) *sqlx.DB {
 
 func getURI(opt Options) (string, string, error) {
 	switch opt.Driver {
-	case PGSQL:
+	case preference.POSTGRES:
 		ssl := `disable`
 		if opt.SSL {
 			ssl = `require`
@@ -62,7 +63,7 @@ func getURI(opt Options) (string, string, error) {
 
 		return opt.Driver, fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", opt.Host, opt.Port, opt.User, opt.Password, opt.DB, ssl), nil
 
-	case MYSQL:
+	case preference.MYSQL:
 		ssl := `false`
 		if opt.SSL {
 			ssl = `true`

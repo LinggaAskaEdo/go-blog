@@ -2,11 +2,11 @@ package rest
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"time"
 
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 
 	"github.com/linggaaskaedo/go-blog/src/business/dto"
@@ -30,14 +30,19 @@ func (e *rest) httpRespSuccess(w http.ResponseWriter, r *http.Request, statusCod
 	}
 
 	switch data := resp.(type) {
+	case nil:
+		httpResp := &HTTPEmptyResp{
+			Meta: meta,
+		}
+		raw, err = e.Marshal(httpResp)
 	case entity.User:
-		merchantResp := &HTTPUserResp{
+		userResp := &HTTPUserResp{
 			Meta: meta,
 			Data: UserData{
 				User: &data,
 			},
 		}
-		raw, err = e.Marshal(merchantResp)
+		raw, err = e.Marshal(userResp)
 	default:
 		e.httpRespError(w, r, http.StatusInternalServerError, errors.New("Invalid response type"))
 		return
@@ -54,7 +59,7 @@ func (e *rest) httpRespSuccess(w http.ResponseWriter, r *http.Request, statusCod
 }
 
 func (e *rest) httpRespError(w http.ResponseWriter, r *http.Request, statusCode int, err error) {
-	log.Error().Stack().Err(err).Send()
+	e.log.Error().Stack().Err(err).Send()
 
 	jsonErrResp := &HTTPErrResp{
 		Meta: dto.Meta{

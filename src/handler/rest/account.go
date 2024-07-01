@@ -4,12 +4,10 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
-
-	"github.com/rs/zerolog/log"
 )
 
 func (e *rest) AccountLogin(w http.ResponseWriter, r *http.Request) {
-	log.Debug().Msg("YUHUUUU")
+	e.log.Debug().Msg("YUHUUUU")
 
 	body, err := io.ReadAll(r.Body)
 	if err != nil {

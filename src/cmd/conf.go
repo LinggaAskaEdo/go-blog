@@ -4,6 +4,8 @@ import (
 	"github.com/spf13/viper"
 
 	liblog "github.com/linggaaskaedo/go-blog/stdlib/logger"
+	libmiddleware "github.com/linggaaskaedo/go-blog/stdlib/middleware"
+	libmigrate "github.com/linggaaskaedo/go-blog/stdlib/migrate"
 	libmux "github.com/linggaaskaedo/go-blog/stdlib/mux"
 	libredis "github.com/linggaaskaedo/go-blog/stdlib/redis"
 	libhttpserver "github.com/linggaaskaedo/go-blog/stdlib/server"
@@ -11,12 +13,14 @@ import (
 )
 
 type Config struct {
-	App    Options
-	Log    liblog.Options
-	Redis  libredis.Options
-	SQL    map[string]libsql.Options
-	Mux    libmux.Options
-	Server libhttpserver.Options
+	App        Options
+	Log        liblog.Options
+	Redis      libredis.Options
+	SQL        map[string]libsql.Options
+	Middleware libmiddleware.Options
+	Mux        libmux.Options
+	Server     libhttpserver.Options
+	Migrate    libmigrate.Options
 }
 
 type Options struct {

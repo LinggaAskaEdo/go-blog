@@ -13,6 +13,8 @@ import (
 	resthandler "github.com/linggaaskaedo/go-blog/src/handler/rest"
 	libgrace "github.com/linggaaskaedo/go-blog/stdlib/grace"
 	liblog "github.com/linggaaskaedo/go-blog/stdlib/logger"
+	libmiddleware "github.com/linggaaskaedo/go-blog/stdlib/middleware"
+	libmigrate "github.com/linggaaskaedo/go-blog/stdlib/migrate"
 	libmux "github.com/linggaaskaedo/go-blog/stdlib/mux"
 	libredis "github.com/linggaaskaedo/go-blog/stdlib/redis"
 	libhttpserver "github.com/linggaaskaedo/go-blog/stdlib/server"
@@ -52,32 +54,39 @@ func init() {
 	}
 
 	// Logger Initialization
-	liblog.Init(conf.Log)
+	log := liblog.Init(conf.Log)
 
 	// Redis Initialization
-	redisClient0 = libredis.Init(conf.Redis)
+	redisClient0 = libredis.Init(log, conf.Redis)
 
 	// SQL Initialization
-	sqlClient0 = libsql.Init(conf.SQL["sql-0"])
-	sqlClient1 = libsql.Init(conf.SQL["sql-1"])
+	sqlClient0 = libsql.Init(log, conf.SQL["sql-0"])
+	sqlClient1 = libsql.Init(log, conf.SQL["sql-1"])
+
+	// Migration Initialization
+	libmigrate.Init(log, conf.Migrate, sqlClient0)
+	libmigrate.Init(log, conf.Migrate, sqlClient1)
+
+	// Middleware Initialization
+	middleware := libmiddleware.Init(log, conf.Middleware)
 
 	// HTTP Mux Initialization
-	httpMux = libmux.Init(conf.Mux)
+	httpMux = libmux.Init(middleware, conf.Mux)
 
 	// Domain Initialization
-	dom = domain.Init(redisClient0, sqlClient0, sqlClient1)
+	dom = domain.Init(log, redisClient0, sqlClient0, sqlClient1)
 
 	// Usecase Initialization
-	uc = usecase.Init(redisClient0, sqlClient0, sqlClient1, dom)
+	uc = usecase.Init(log, redisClient0, sqlClient0, sqlClient1, dom)
 
 	// REST Handler Initialization
-	resthandler.Init(httpMux, uc)
+	resthandler.Init(log, httpMux, uc)
 
 	// HTTP Server Initialization
 	httpServer = libhttpserver.Init(conf.Server, httpMux)
 
 	// App Initialization
-	app = libgrace.Init(httpServer)
+	app = libgrace.Init(log, httpServer)
 }
 
 func main() {

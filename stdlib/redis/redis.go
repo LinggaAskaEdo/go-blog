@@ -2,11 +2,14 @@ package redis
 
 import (
 	"context"
+	"sync"
 	"time"
 
 	"github.com/redis/go-redis/v9"
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 )
+
+var once = &sync.Once{}
 
 type Options struct {
 	Enabled         bool
@@ -29,40 +32,44 @@ type Options struct {
 	RouteRandomly   bool
 }
 
-func Init(opt Options) *redis.Client {
+func Init(log zerolog.Logger, opt Options) *redis.Client {
+	var redisClient *redis.Client
+
 	if !opt.Enabled {
 		return nil
 	}
 
-	univOptions := &redis.UniversalOptions{
-		Addrs:           opt.Address,
-		Password:        opt.Password,
-		MaxRetries:      opt.MaxRetries,
-		MinRetryBackoff: opt.MinRetryBackoff,
-		MaxRetryBackoff: opt.MaxRetryBackoff,
-		DialTimeout:     opt.DialTimeout,
-		ReadTimeout:     opt.ReadTimeout,
-		WriteTimeout:    opt.WriteTimeout,
-		PoolSize:        opt.PoolSize,
-		MinIdleConns:    opt.MinIdleConns,
-		MaxIdleConns:    opt.MaxIdleConns,
-		MaxActiveConns:  opt.MaxActiveConns,
-		PoolTimeout:     opt.PoolTimeout,
-		MaxRedirects:    opt.MaxRedirects,
-		ReadOnly:        opt.ReadOnly,
-		RouteByLatency:  opt.RouteByLatency,
-		RouteRandomly:   opt.RouteRandomly,
-	}
+	once.Do(func() {
+		univOptions := &redis.UniversalOptions{
+			Addrs:           opt.Address,
+			Password:        opt.Password,
+			MaxRetries:      opt.MaxRetries,
+			MinRetryBackoff: opt.MinRetryBackoff,
+			MaxRetryBackoff: opt.MaxRetryBackoff,
+			DialTimeout:     opt.DialTimeout,
+			ReadTimeout:     opt.ReadTimeout,
+			WriteTimeout:    opt.WriteTimeout,
+			PoolSize:        opt.PoolSize,
+			MinIdleConns:    opt.MinIdleConns,
+			MaxIdleConns:    opt.MaxIdleConns,
+			MaxActiveConns:  opt.MaxActiveConns,
+			PoolTimeout:     opt.PoolTimeout,
+			MaxRedirects:    opt.MaxRedirects,
+			ReadOnly:        opt.ReadOnly,
+			RouteByLatency:  opt.RouteByLatency,
+			RouteRandomly:   opt.RouteRandomly,
+		}
 
-	univClient := redis.NewUniversalClient(univOptions)
-	redisClient := univClient.(*redis.Client)
+		univClient := redis.NewUniversalClient(univOptions)
+		redisClient := univClient.(*redis.Client)
 
-	ping, err := redisClient.Ping(context.Background()).Result()
-	if err != nil {
-		log.Panic().Err(err).Str("redis_status", "FAILED").Send()
-	}
+		ping, err := redisClient.Ping(context.Background()).Result()
+		if err != nil {
+			log.Panic().Err(err).Str("redis_status", "FAILED").Send()
+		}
 
-	log.Debug().Str("redis_status", ping).Send()
+		log.Debug().Str("redis_status", ping).Send()
+	})
 
 	return redisClient
 }

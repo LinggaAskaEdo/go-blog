@@ -16,16 +16,17 @@ type DomainItf interface {
 }
 
 type user struct {
-	logger zerolog.Logger
-	redis  *redis.Client
-	sql0   *sqlx.DB
-	sql1   *sqlx.DB
+	log   zerolog.Logger
+	redis *redis.Client
+	sql0  *sqlx.DB
+	sql1  *sqlx.DB
 }
 
 type Options struct{}
 
-func InitUserDomain(redis *redis.Client, sql0 *sqlx.DB, sql1 *sqlx.DB) DomainItf {
+func InitUserDomain(log zerolog.Logger, redis *redis.Client, sql0 *sqlx.DB, sql1 *sqlx.DB) DomainItf {
 	return &user{
+		log:   log,
 		redis: redis,
 		sql0:  sql0,
 		sql1:  sql1,

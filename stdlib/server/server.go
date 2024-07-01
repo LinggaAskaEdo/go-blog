@@ -4,10 +4,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/gorilla/mux"
 )
+
+var once = &sync.Once{}
 
 type httpServer struct {
 	logger  log.Logger
@@ -23,15 +26,19 @@ type Options struct {
 }
 
 func Init(opt Options, mux *mux.Router) *http.Server {
-	serverPort := fmt.Sprintf(":%d", opt.Port)
+	var server *http.Server
 
-	server := &http.Server{
-		Addr:         serverPort,
-		WriteTimeout: time.Second * time.Duration(opt.WriteTimeout),
-		ReadTimeout:  time.Second * time.Duration(opt.ReadTimeout),
-		IdleTimeout:  time.Second * time.Duration(opt.IdleTimeout),
-		Handler:      mux,
-	}
+	once.Do(func() {
+		serverPort := fmt.Sprintf(":%d", opt.Port)
+
+		server = &http.Server{
+			Addr:         serverPort,
+			WriteTimeout: time.Second * time.Duration(opt.WriteTimeout),
+			ReadTimeout:  time.Second * time.Duration(opt.ReadTimeout),
+			IdleTimeout:  time.Second * time.Duration(opt.IdleTimeout),
+			Handler:      mux,
+		}
+	})
 
 	return server
 }

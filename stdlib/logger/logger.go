@@ -23,10 +23,12 @@ type Options struct {
 	Compress   bool
 }
 
-func Init(opt Options) {
+func Init(opt Options) zerolog.Logger {
+	var log zerolog.Logger
+
 	once.Do(func() {
-		zerolog.TimeFieldFormat = time.RFC3339Nano
 		zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
+		zerolog.TimeFieldFormat = time.RFC3339Nano
 
 		logLevel, err := strconv.Atoi(os.Getenv("LOG_LEVEL"))
 		if err != nil {
@@ -50,11 +52,13 @@ func Init(opt Options) {
 			output = zerolog.MultiLevelWriter(os.Stderr, fileLogger)
 		}
 
-		zerolog.New(output).
+		log = zerolog.New(output).
 			Level(zerolog.Level(logLevel)).
 			With().
 			Timestamp().
 			Int("pid", os.Getpid()).
 			Logger()
 	})
+
+	return log
 }

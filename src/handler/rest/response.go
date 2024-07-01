@@ -9,6 +9,10 @@ type HTTPErrResp struct {
 	Meta dto.Meta `json:"metadata"`
 }
 
+type HTTPEmptyResp struct {
+	Meta dto.Meta `json:"metadata"`
+}
+
 type HTTPUserResp struct {
 	Meta dto.Meta `json:"metadata"`
 	Data UserData `json:"data"`
