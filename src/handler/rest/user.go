@@ -36,3 +36,7 @@ func (e *rest) GetUserByID(w http.ResponseWriter, r *http.Request) {
 
 	e.httpRespSuccess(w, r, http.StatusOK, result, nil)
 }
+
+func (e *rest) CreateUser(w http.ResponseWriter, r *http.Request) {
+
+}

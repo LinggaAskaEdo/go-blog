@@ -1,21 +1,20 @@
-package user
+package division
 
 import (
 	"context"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/redis/go-redis/v9"
-	"github.com/rs/zerolog"
-
 	"github.com/linggaaskaedo/go-blog/src/business/dto"
 	"github.com/linggaaskaedo/go-blog/src/business/entity"
+	"github.com/redis/go-redis/v9"
+	"github.com/rs/zerolog"
 )
 
 type DomainItf interface {
-	GetUserByUserID(ctx context.Context, c dto.CacheControl, userID int64) (entity.User, error)
+	CreateDivision(ctx context.Context, divisionDTO dto.DivisionDTO) (entity.Division, error)
 }
 
-type user struct {
+type division struct {
 	log   zerolog.Logger
 	redis *redis.Client
 	sql0  *sqlx.DB
@@ -25,8 +24,8 @@ type user struct {
 type Options struct {
 }
 
-func InitUserDomain(log zerolog.Logger, redis *redis.Client, sql0 *sqlx.DB, sql1 *sqlx.DB) DomainItf {
-	return &user{
+func InitDivisionDomain(log zerolog.Logger, redis *redis.Client, sql0 *sqlx.DB, sql1 *sqlx.DB) DomainItf {
+	return &division{
 		log:   log,
 		redis: redis,
 		sql0:  sql0,

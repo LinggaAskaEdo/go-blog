@@ -30,10 +30,18 @@ rabbit-start:
 rabbit-stop: 
 	@docker stop rabbitmq-docker
 
-.PHONY: generate-migrate-file
-generate-migrate-file: 
+# .PHONY: generate-migrate-file
+# generate-migrate-file: 
+# 	@if [ -z "$(name)" ]; then \
+# 		echo "Param name is missing !!!\nex: make generate-migrate-file name=create_user_table"; \
+# 	else \
+# 		migrate create -ext sql -dir ${SQL_PATH} -seq $(name); \
+# 	fi
+
+PHONY: create-migration-file
+create-migration-file: 
 	@if [ -z "$(name)" ]; then \
 		echo "Param name is missing !!!\nex: make generate-migrate-file name=create_user_table"; \
 	else \
-		migrate create -ext sql -dir ${SQL_PATH} -seq $(name); \
-	fi
+		goose -dir ${SQL_PATH} create $(name) sql; \
+	fi	

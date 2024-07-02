@@ -6,14 +6,17 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/linggaaskaedo/go-blog/src/business/domain"
+	"github.com/linggaaskaedo/go-blog/src/business/usecase/division"
 	"github.com/linggaaskaedo/go-blog/src/business/usecase/user"
 )
 
 type Usecase struct {
-	User user.UsecaseItf
+	User     user.UsecaseItf
+	Division division.UsecaseItf
 }
 
-type Options struct{}
+type Options struct {
+}
 
 func Init(
 	log zerolog.Logger,
@@ -29,6 +32,13 @@ func Init(
 			sql0,
 			sql1,
 			dom.User,
+		),
+		Division: division.InitDivisionUsecase(
+			log,
+			redis,
+			sql0,
+			sql1,
+			dom.Division,
 		),
 	}
 }

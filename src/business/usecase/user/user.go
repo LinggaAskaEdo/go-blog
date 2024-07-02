@@ -24,7 +24,8 @@ type user struct {
 	user  usr.DomainItf
 }
 
-type Options struct{}
+type Options struct {
+}
 
 func InitUserUsecase(log zerolog.Logger, redis *redis.Client, sql0 *sqlx.DB, sql1 *sqlx.DB, u usr.DomainItf) UsecaseItf {
 	return &user{

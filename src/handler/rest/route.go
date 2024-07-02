@@ -41,6 +41,33 @@ func (e *rest) InitRoute() []RoutePrefix {
 				e.GetUserByID,
 				false,
 			},
+			{
+				"CreateUser",
+				"POST",
+				"",
+				e.CreateUser,
+				false,
+			},
+		},
+	}
+
+	divisionRoutes := RoutePrefix{
+		"/division",
+		[]Route{
+			// {
+			// 	"GetDivisionByID",
+			// 	"GET",
+			// 	"/{divisionID}",
+			// 	e.GetDivisioByID,
+			// 	false,
+			// },
+			{
+				"CreateDivision",
+				"POST",
+				"",
+				e.CreateDivision,
+				false,
+			},
 		},
 	}
 
@@ -57,7 +84,7 @@ func (e *rest) InitRoute() []RoutePrefix {
 		},
 	}
 
-	routes = append(routes, accountRoutes, userRoutes, productRoutes)
+	routes = append(routes, accountRoutes, userRoutes, divisionRoutes, productRoutes)
 
 	return routes
 }

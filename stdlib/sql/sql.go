@@ -69,7 +69,7 @@ func getURI(opt Options) (string, string, error) {
 			ssl = `true`
 		}
 
-		return opt.Driver, fmt.Sprintf("%s:%s@tcp(%s:%v)/%s?tls=%s", opt.User, opt.Password, opt.Host, opt.Port, opt.DB, ssl), nil
+		return opt.Driver, fmt.Sprintf("%s:%s@tcp(%s:%v)/%s?tls=%s&parseTime=%t", opt.User, opt.Password, opt.Host, opt.Port, opt.DB, ssl, true), nil
 
 	default:
 		return "", "", errors.New("DB Driver is not supported ")

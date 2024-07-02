@@ -7,6 +7,7 @@ import (
 	libmiddleware "github.com/linggaaskaedo/go-blog/stdlib/middleware"
 	libmigrate "github.com/linggaaskaedo/go-blog/stdlib/migrate"
 	libmux "github.com/linggaaskaedo/go-blog/stdlib/mux"
+	libparser "github.com/linggaaskaedo/go-blog/stdlib/parser"
 	libredis "github.com/linggaaskaedo/go-blog/stdlib/redis"
 	libhttpserver "github.com/linggaaskaedo/go-blog/stdlib/server"
 	libsql "github.com/linggaaskaedo/go-blog/stdlib/sql"
@@ -21,6 +22,7 @@ type Config struct {
 	Mux        libmux.Options
 	Server     libhttpserver.Options
 	Migrate    libmigrate.Options
+	Parser     libparser.Options
 }
 
 type Options struct {

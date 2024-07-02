@@ -16,6 +16,7 @@ import (
 	libmiddleware "github.com/linggaaskaedo/go-blog/stdlib/middleware"
 	libmigrate "github.com/linggaaskaedo/go-blog/stdlib/migrate"
 	libmux "github.com/linggaaskaedo/go-blog/stdlib/mux"
+	libparser "github.com/linggaaskaedo/go-blog/stdlib/parser"
 	libredis "github.com/linggaaskaedo/go-blog/stdlib/redis"
 	libhttpserver "github.com/linggaaskaedo/go-blog/stdlib/server"
 	libsql "github.com/linggaaskaedo/go-blog/stdlib/sql"
@@ -34,6 +35,7 @@ var (
 	sqlClient1   *sqlx.DB
 	httpMux      *mux.Router
 	httpServer   *http.Server
+	parser       libparser.Parser
 	app          libgrace.App
 )
 
@@ -79,8 +81,11 @@ func init() {
 	// Usecase Initialization
 	uc = usecase.Init(log, redisClient0, sqlClient0, sqlClient1, dom)
 
+	// Parser Initialization
+	parser = libparser.Init(log, conf.Parser)
+
 	// REST Handler Initialization
-	resthandler.Init(log, httpMux, uc)
+	resthandler.Init(log, httpMux, parser,uc)
 
 	// HTTP Server Initialization
 	httpServer = libhttpserver.Init(conf.Server, httpMux)

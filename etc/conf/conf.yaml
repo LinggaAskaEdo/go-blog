@@ -62,6 +62,21 @@ migrate:
   mysqlEnabled: true
   postgresEnabled: false
 
+parser:
+  json:
+    config: "custom"
+    indentionStep: "0"
+    marshalFloatWith6Digits: false
+    escapeHTML: true
+    sortMapKeys: false
+    useNumber: true
+    disallowUnknownFields: true
+    tagKey: "json"
+    onlyTaggedField: true
+    validateJsonRawMessage: true
+    objectFieldMustBeSimpleString: false
+    caseSensitive: true
+
 server:
   port: 6666
   writeTimeout: 15

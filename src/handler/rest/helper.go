@@ -10,7 +10,6 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/linggaaskaedo/go-blog/src/business/dto"
-	"github.com/linggaaskaedo/go-blog/src/business/entity"
 	preference "github.com/linggaaskaedo/go-blog/stdlib/preference"
 )
 
@@ -35,7 +34,8 @@ func (e *rest) httpRespSuccess(w http.ResponseWriter, r *http.Request, statusCod
 			Meta: meta,
 		}
 		raw, err = e.Marshal(httpResp)
-	case entity.User:
+
+	case dto.UserDTO:
 		userResp := &HTTPUserResp{
 			Meta: meta,
 			Data: UserData{
@@ -43,6 +43,16 @@ func (e *rest) httpRespSuccess(w http.ResponseWriter, r *http.Request, statusCod
 			},
 		}
 		raw, err = e.Marshal(userResp)
+
+	case dto.DivisionDTO:
+		divisionResp := &HTTPDivisionResp{
+			Meta: meta,
+			Data: DivisionData{
+				Division: &data,
+			},
+		}
+		raw, err = e.Marshal(divisionResp)
+
 	default:
 		e.httpRespError(w, r, http.StatusInternalServerError, errors.New("Invalid response type"))
 		return

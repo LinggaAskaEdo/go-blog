@@ -17,7 +17,7 @@ func (u *user) getSQLUserByID(ctx context.Context, userID int64) (entity.User, e
 
 	err := sqlRow.Scan(
 		&result.ID,
-		&result.Name,
+		&result.Username,
 		&result.Email,
 		&result.Phone,
 		&result.Division.ID,
