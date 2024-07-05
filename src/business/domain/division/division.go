@@ -4,14 +4,14 @@ import (
 	"context"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/linggaaskaedo/go-blog/src/business/dto"
 	"github.com/linggaaskaedo/go-blog/src/business/entity"
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
 )
 
 type DomainItf interface {
-	CreateDivision(ctx context.Context, divisionDTO dto.DivisionDTO) (entity.Division, error)
+	CreateDivision(ctx context.Context, divisionEntity entity.Division) (entity.Division, error)
+	GetDivisioByID(ctx context.Context, divisionID int64) (entity.Division, error)
 }
 
 type division struct {

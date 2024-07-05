@@ -4,7 +4,7 @@ import (
 	jsoniter "github.com/json-iterator/go"
 	"github.com/rs/zerolog"
 
-	x "github.com/linggaaskaedo/go-blog/stdlib/error"
+	x "github.com/linggaaskaedo/go-blog/stdlib/errors/entity"
 )
 
 const (
@@ -79,7 +79,7 @@ func (p *jsonparser) Marshal(orig interface{}) ([]byte, error) {
 	stream.WriteVal(orig)
 	result := make([]byte, stream.Buffered())
 	if stream.Error != nil {
-		return nil, x.Wrap("json_parser", stream.Error)
+		return nil, x.Wrap(stream.Error, "json_parser")
 	}
 
 	copy(result, stream.Buffer())
@@ -92,7 +92,7 @@ func (p *jsonparser) Unmarshal(blob []byte, dest interface{}) error {
 	defer p.API.ReturnIterator(iter)
 	iter.ReadVal(dest)
 	if iter.Error != nil {
-		return x.Wrap("json_parser", iter.Error)
+		return x.Wrap(iter.Error, "json_parser")
 	}
 
 	return nil

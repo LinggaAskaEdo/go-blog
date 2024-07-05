@@ -10,7 +10,8 @@ type Options struct {
 
 func Init(middleware middleware.Middleware, opt Options) *mux.Router {
 	mux := mux.NewRouter()
-	mux.Use(middleware.RequestHandler)
+	mux.Use(middleware.Handler)
+	mux.Use(middleware.CORS)
 
 	return mux
 }

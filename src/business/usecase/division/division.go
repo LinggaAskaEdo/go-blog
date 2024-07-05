@@ -9,10 +9,12 @@ import (
 
 	div "github.com/linggaaskaedo/go-blog/src/business/domain/division"
 	"github.com/linggaaskaedo/go-blog/src/business/dto"
+	"github.com/linggaaskaedo/go-blog/src/business/entity"
 )
 
 type UsecaseItf interface {
-	CreateDivision(ctx context.Context, division dto.DivisionDTO) (dto.DivisionDTO, error)
+	CreateDivision(ctx context.Context, divisionEntity entity.Division) (dto.DivisionDTO, error)
+	GetDivisioByID(ctx context.Context, divisionID int64) (dto.DivisionDTO, error)
 }
 
 type division struct {

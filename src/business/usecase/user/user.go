@@ -13,7 +13,8 @@ import (
 )
 
 type UsecaseItf interface {
-	GetUserByUserID(ctx context.Context, c dto.CacheControl, userID int64) (entity.User, error)
+	CreateUser(ctx context.Context, userEntity entity.User) (dto.UserDTO, error)
+	GetUserByUserID(ctx context.Context, c dto.CacheControl, userID int64) (dto.UserDTO, error)
 }
 
 type user struct {

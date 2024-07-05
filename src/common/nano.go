@@ -12,18 +12,14 @@ const (
 	length   = 13
 )
 
-// New generates a unique public ID.
 func NewPID() (string, error) {
 	return nanoid.Generate(alphabet, length)
 }
 
-// Must is the same as New, but panics on error.
 func MustPID() string {
 	return nanoid.MustGenerate(alphabet, length)
 }
 
-// Validate checks if a given field name’s public ID value is valid according to
-// the constraints defined by package publicid.
 func ValidatePID(fieldName, id string) error {
 	if id == "" {
 		return errors.Errorf("%s cannot be blank", fieldName)

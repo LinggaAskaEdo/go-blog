@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
@@ -10,6 +9,7 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/linggaaskaedo/go-blog/src/business/dto"
+	apperr "github.com/linggaaskaedo/go-blog/stdlib/errors"
 	preference "github.com/linggaaskaedo/go-blog/stdlib/preference"
 )
 
@@ -24,7 +24,7 @@ func (e *rest) httpRespSuccess(w http.ResponseWriter, r *http.Request, statusCod
 		StatusCode: statusCode,
 		Status:     http.StatusText(statusCode),
 		Message:    fmt.Sprintf("%s %s [%d] %s", r.Method, r.URL.RequestURI(), statusCode, http.StatusText(statusCode)),
-		Error:      "",
+		Error:      nil,
 		Timestamp:  time.Now().Format(time.RFC3339),
 	}
 
@@ -54,12 +54,12 @@ func (e *rest) httpRespSuccess(w http.ResponseWriter, r *http.Request, statusCod
 		raw, err = e.Marshal(divisionResp)
 
 	default:
-		e.httpRespError(w, r, http.StatusInternalServerError, errors.New("Invalid response type"))
+		e.httpRespError(w, r, errors.New("Invalid response type"))
 		return
 	}
 
 	if err != nil {
-		e.httpRespError(w, r, http.StatusInternalServerError, err)
+		e.httpRespError(w, r, err)
 		return
 	}
 
@@ -68,21 +68,29 @@ func (e *rest) httpRespSuccess(w http.ResponseWriter, r *http.Request, statusCod
 	_, _ = w.Write(raw)
 }
 
-func (e *rest) httpRespError(w http.ResponseWriter, r *http.Request, statusCode int, err error) {
+func (e *rest) httpRespError(w http.ResponseWriter, r *http.Request, err error) {
 	e.log.Error().Stack().Err(err).Send()
+
+	lang := preference.LangID
+	if r.Header.Get(preference.AppLang) == preference.LangEN {
+		lang = preference.LangEN
+	}
+
+	statusCode, displayError := apperr.Compile(apperr.COMMON, err, lang, true)
+	statusStr := http.StatusText(statusCode)
 
 	jsonErrResp := &HTTPErrResp{
 		Meta: dto.Meta{
 			Path:       r.URL.String(),
 			StatusCode: statusCode,
-			Status:     http.StatusText(statusCode),
+			Status:     statusStr,
 			Message:    fmt.Sprintf("%s %s [%d] %s", r.Method, r.URL.RequestURI(), statusCode, http.StatusText(statusCode)),
-			Error:      err.Error(),
+			Error:      &displayError,
 			Timestamp:  time.Now().Format(time.RFC3339),
 		},
 	}
 
-	raw, err := json.Marshal(jsonErrResp)
+	raw, err := e.json.Marshal(jsonErrResp)
 	if err != nil {
 		statusCode = http.StatusInternalServerError
 		log.Error().Stack().Err(err).Send()
@@ -94,5 +102,5 @@ func (e *rest) httpRespError(w http.ResponseWriter, r *http.Request, statusCode 
 }
 
 func (e *rest) Marshal(resp interface{}) ([]byte, error) {
-	return json.Marshal(&resp)
+	return e.json.Marshal(&resp)
 }

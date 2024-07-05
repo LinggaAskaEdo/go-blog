@@ -38,10 +38,26 @@ rabbit-stop:
 # 		migrate create -ext sql -dir ${SQL_PATH} -seq $(name); \
 # 	fi
 
-PHONY: create-migration-file
-create-migration-file: 
+# PHONY: create-migration-file
+# create-migration-file: 
+# 	@if [ -z "$(name)" ]; then \
+# 		echo "Param name is missing !!!\nex: make create-migration-file name=create_user_table"; \
+# 	else \
+# 		goose -dir ${SQL_PATH} create $(name) sql; \
+# 	fi	
+
+.PHONY: create-migration-file
+create-migration-file:
 	@if [ -z "$(name)" ]; then \
-		echo "Param name is missing !!!\nex: make generate-migrate-file name=create_user_table"; \
+		echo "Param name is missing !!!\nex: make create-migration-file name=create_user_table"; \
 	else \
-		goose -dir ${SQL_PATH} create $(name) sql; \
+		./etc/sql/generator.sh -f $(name); \
 	fi	
+
+.PHONY: cert
+cert:
+	@if ! ls -AU "./etc/cert/" | read _; then \
+		openssl genrsa -out ./etc/cert/id_rsa 4096 && openssl rsa -in ./etc/cert/id_rsa -pubout -out ./etc/cert/id_rsa.pub; \
+	else \
+		echo "Directory is not empty !!!"; \
+	fi

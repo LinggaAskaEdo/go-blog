@@ -8,6 +8,7 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/linggaaskaedo/go-blog/src/business/usecase"
+	"github.com/linggaaskaedo/go-blog/stdlib/middleware"
 	"github.com/linggaaskaedo/go-blog/stdlib/parser"
 )
 
@@ -19,19 +20,21 @@ var (
 type rest struct {
 	log  zerolog.Logger
 	mux  *mux.Router
+	mw   middleware.Middleware
 	json parser.JSONParser
 	uc   *usecase.Usecase
 }
 
 type Options struct{}
 
-func Init(log zerolog.Logger, mux *mux.Router, parse parser.Parser, uc *usecase.Usecase) {
+func Init(log zerolog.Logger, mux *mux.Router, mw middleware.Middleware, parse parser.Parser, uc *usecase.Usecase) {
 	var e *rest
 
 	once.Do(func() {
 		e = &rest{
 			log:  log,
 			mux:  mux,
+			mw:   mw,
 			json: parse.JSONParser(),
 			uc:   uc,
 		}

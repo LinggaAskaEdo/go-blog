@@ -85,7 +85,7 @@ func init() {
 	parser = libparser.Init(log, conf.Parser)
 
 	// REST Handler Initialization
-	resthandler.Init(log, httpMux, parser,uc)
+	resthandler.Init(log, httpMux, middleware, parser, uc)
 
 	// HTTP Server Initialization
 	httpServer = libhttpserver.Init(conf.Server, httpMux)

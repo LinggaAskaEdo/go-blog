@@ -1,14 +1,5 @@
 package rest
 
-type AccountLoginRequest struct {
-	Data CreateUserData `json:"data"`
-}
-
-type CreateUserData struct {
-	Username string `json:"username" example:"John"`
-	Password string `json:"password" example:"$2y$10$xdTlstoTGTk5N2POd/cV6e22ByOnZmGPSjjYw9Nknd.uLO1hFuF2u"`
-}
-
 type DivisionCreateRequest struct {
 	Data CreateDivisionData `json:"data"`
 }
@@ -19,4 +10,20 @@ type CreateDivisionData struct {
 
 type DivisionDataPayload struct {
 	Name string `json:"name"`
+}
+
+type UserCreateRequest struct {
+	Data CreateUserData `json:"data"`
+}
+
+type CreateUserData struct {
+	User *UserDataPayload `json:"user,omitempty"`
+}
+
+type UserDataPayload struct {
+	Username   string `json:"username"`
+	Email      string `json:"email"`
+	Phone      string `json:"phone"`
+	DivisionID string `json:"divisionID"`
+	Password   string `json:"password"`
 }

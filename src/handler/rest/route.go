@@ -35,37 +35,37 @@ func (e *rest) InitRoute() []RoutePrefix {
 		"/user",
 		[]Route{
 			{
-				"GetUserByID",
-				"GET",
-				"/{userID}",
-				e.GetUserByID,
-				false,
-			},
-			{
 				"CreateUser",
 				"POST",
 				"",
 				e.CreateUser,
 				false,
 			},
+			// {
+			// 	"GetUserByID",
+			// 	"GET",
+			// 	"/{userID}",
+			// 	e.GetUserByID,
+			// 	false,
+			// },
 		},
 	}
 
 	divisionRoutes := RoutePrefix{
 		"/division",
 		[]Route{
-			// {
-			// 	"GetDivisionByID",
-			// 	"GET",
-			// 	"/{divisionID}",
-			// 	e.GetDivisioByID,
-			// 	false,
-			// },
 			{
 				"CreateDivision",
 				"POST",
 				"",
 				e.CreateDivision,
+				false,
+			},
+			{
+				"GetDivisionByID",
+				"GET",
+				"/{divisionID}",
+				e.GetDivisioByID,
 				false,
 			},
 		},

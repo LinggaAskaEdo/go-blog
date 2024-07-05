@@ -12,6 +12,7 @@ import (
 )
 
 type DomainItf interface {
+	CreateUser(ctx context.Context, userEntity entity.User) (entity.User, error)
 	GetUserByUserID(ctx context.Context, c dto.CacheControl, userID int64) (entity.User, error)
 }
 
